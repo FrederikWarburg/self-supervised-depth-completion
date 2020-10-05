@@ -159,6 +159,7 @@ class DepthCompletionNet(nn.Module):
                                    relu=False)
 
     def forward(self, x):
+
         # first layer
         if 'd' in self.modality:
             conv1_d = self.conv1_d(x['d'])
@@ -168,6 +169,7 @@ class DepthCompletionNet(nn.Module):
             conv1_img = self.conv1_img(x['g'])
 
         if self.modality == 'rgbd' or self.modality == 'gd':
+            print(conv1_d.shape, conv1_img.shape)
             conv1 = torch.cat((conv1_d, conv1_img), 1)
         else:
             conv1 = conv1_d if (self.modality == 'd') else conv1_img

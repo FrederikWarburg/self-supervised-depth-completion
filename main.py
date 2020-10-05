@@ -7,7 +7,8 @@ import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 
-from dataloaders.kitti_loader import load_calib, oheight, owidth, input_options, KittiDepth
+#from dataloaders.kitti_loader import load_calib, oheight, owidth, input_options, KittiDepth as Depth
+from dataloaders.tartan_loader import load_calib, oheight, owidth, input_options, TartanDepth as Depth
 from model import DepthCompletionNet
 from metrics import AverageMeter, Result
 import criteria
@@ -164,6 +165,7 @@ def iterate(mode, args, loader, model, optimizer, logger, epoch):
         lr = 0
 
     for i, batch_data in enumerate(loader):
+        
         start = time.time()
         batch_data = {
             key: val.to(device)
@@ -174,7 +176,9 @@ def iterate(mode, args, loader, model, optimizer, logger, epoch):
         data_time = time.time() - start
 
         start = time.time()
+        print("model start")
         pred = model(batch_data)
+        print("predictions", pred.shape)
         depth_loss, photometric_loss, smooth_loss, mask = 0, 0, 0, None
         if mode == 'train':
             # Loss 1: the direct depth supervision from ground truth label
@@ -220,6 +224,7 @@ def iterate(mode, args, loader, model, optimizer, logger, epoch):
             smooth_loss = smoothness_criterion(pred) if args.w2 > 0 else 0
 
             # backprop
+            print("backprop")
             loss = depth_loss + args.w1 * photometric_loss + args.w2 * smooth_loss
             optimizer.zero_grad()
             loss.backward()
@@ -259,8 +264,7 @@ def main():
     if args.evaluate:
         args_new = args
         if os.path.isfile(args.evaluate):
-            print("=> loading checkpoint '{}' ... ".format(args.evaluate),
-                  end='')
+            print("=> loading checkpoint '{}' ... ".format(args.evaluate), end='')
             checkpoint = torch.load(args.evaluate, map_location=device)
             args = checkpoint['args']
             args.data_folder = args_new.data_folder
@@ -304,7 +308,7 @@ def main():
     # Data loading code
     print("=> creating data loaders ... ")
     if not is_eval:
-        train_dataset = KittiDepth('train', args)
+        train_dataset = Depth('train', args)
         train_loader = torch.utils.data.DataLoader(train_dataset,
                                                    batch_size=args.batch_size,
                                                    shuffle=True,
@@ -312,7 +316,7 @@ def main():
                                                    pin_memory=True,
                                                    sampler=None)
         print("\t==> train_loader size:{}".format(len(train_loader)))
-    val_dataset = KittiDepth('val', args)
+    val_dataset = Depth('val', args)
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=1,
