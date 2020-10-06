@@ -58,16 +58,16 @@ def depth_read(filename):
     depth_png = np.load(filename)
 
      # thus 50 m = 250 
-    depth_png = depth_png * 5.0
-    depth_png[depth_png > 255] = 255.0
+    # depth_png = depth_png * 5.0
+    depth_png[depth_png > 90] = 90.0
 
     # make sure we have a proper 16bit depth map here.. not 8bit!
     #assert np.max(depth_png) > 255, \
     #    "np.max(depth_png)={}, path={}".format(np.max(depth_png),filename)
 
-    depth = depth_png.astype(np.float) / 256.
+    # depth = depth_png.astype(np.float) / 256.
     # depth[depth_png == 0] = -1.
-    depth = np.expand_dims(depth, -1)
+    depth = np.expand_dims(depth_png, -1)
     return depth
 
 
@@ -77,16 +77,17 @@ def depth_sparse_read(filename):
     # for details see readme.txt
     assert os.path.exists(filename), "file not found: {}".format(filename)
     img_file = np.loadtxt(filename, delimiter=',')
+    img_file = img_file.reshape(-1,4)
     depth_png = np.zeros((oheight, owidth), dtype=np.float)    
 
     for (x,y,z,sigma) in img_file:
-        depth_png[int(y),int(x)] = min(255, z * 5) # thus 50 m = 250  
-    print(np.max(depth_png), np.max(depth_png)>255)
+        depth_png[int(y),int(x)] = min(90, z)
+    
     # make sure we have a proper 16bit depth map here.. not 8bit!
     #assert np.max(depth_png) > 255, \
     #    "np.max(depth_png)={}, path={}".format(np.max(depth_png),filename)
 
-    depth = depth_png.astype(np.float) / 256.
+    # depth = depth_png.astype(np.float) / 256.
     # depth[depth_png == 0] = -1.
     depth = np.expand_dims(depth, -1)
     return depth
@@ -112,12 +113,12 @@ def train_transform(rgb, sparse, target, rgb_near, args):
         # transforms.BottomCrop((oheight, owidth)),
         transforms.HorizontalFlip(do_flip)
     ])
-    print("2")
+
     if sparse is not None:
         sparse = transform_geometric(sparse)
-    print("2.5")
+    
     target = transform_geometric(target)
-    print("3")
+    
     if rgb is not None:
         brightness = np.random.uniform(max(0, 1 - args.jitter),
                                        1 + args.jitter)
