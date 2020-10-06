@@ -76,10 +76,16 @@ def depth_sparse_read(filename):
     # and returns it as a numpy array,
     # for details see readme.txt
     assert os.path.exists(filename), "file not found: {}".format(filename)
+    
+    depth_png = np.zeros((oheight, owidth), dtype=np.float)
+
+    # check if file is empty
+    if os.stat(filename).st_size == 0:
+        return np.expand_dims(depth_png, -1)
+    
     img_file = np.loadtxt(filename, delimiter=',')
     img_file = img_file.reshape(-1,4)
-    depth_png = np.zeros((oheight, owidth), dtype=np.float)    
-
+        
     for (x,y,z,sigma) in img_file:
         depth_png[int(y),int(x)] = min(90, z)
     
@@ -89,7 +95,7 @@ def depth_sparse_read(filename):
 
     # depth = depth_png.astype(np.float) / 256.
     # depth[depth_png == 0] = -1.
-    depth = np.expand_dims(depth, -1)
+    depth = np.expand_dims(depth_png, -1)
     return depth
 
 
