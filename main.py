@@ -187,9 +187,9 @@ def iterate(mode, args, loader, model, optimizer, logger, epoch):
         data_time = time.time() - start
 
         start = time.time()
-        print("model start")
+
         pred = model(batch_data)
-        print("predictions", pred.shape)
+
         depth_loss, photometric_loss, smooth_loss, mask = 0, 0, 0, None
         if mode == 'train':
             # Loss 1: the direct depth supervision from ground truth label
@@ -235,7 +235,6 @@ def iterate(mode, args, loader, model, optimizer, logger, epoch):
             smooth_loss = smoothness_criterion(pred) if args.w2 > 0 else 0
 
             # backprop
-            print("backprop")
             loss = depth_loss + args.w1 * photometric_loss + args.w2 * smooth_loss
             optimizer.zero_grad()
             loss.backward()
