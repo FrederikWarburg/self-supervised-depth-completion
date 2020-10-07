@@ -251,7 +251,7 @@ class NormalizeNumpyArray(object):
         if not (_is_numpy_image(img)):
             raise TypeError('img should be ndarray. Got {}'.format(type(img)))
         # TODO: make efficient
-        print(img.shape)
+
         for i in range(3):
             img[:, :, i] = (img[:, :, i] - self.mean[i]) / self.std[i]
         return img
