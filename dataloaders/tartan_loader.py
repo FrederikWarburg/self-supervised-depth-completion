@@ -136,7 +136,7 @@ def train_transform(rgb, sparse, target, rgb_near, args):
         rgb = transform_rgb(rgb)
         if rgb_near is not None:
             rgb_near = transform_rgb(rgb_near)
-    print("4")
+
     # sparse = drop_depth_measurements(sparse, 0.9)
 
     return rgb, sparse, target, rgb_near

@@ -179,19 +179,19 @@ def train_transform(rgb, sparse, target, rgb_near, args):
     #s = np.random.uniform(1, 1.5) # random scaling
     # angle = np.random.uniform(-5.0, 5.0) # random rotation degrees
     do_flip = np.random.uniform(0.0, 1.0) < 0.5  # random horizontal flip
-    print("1")
+
     transform_geometric = transforms.Compose([
         # transforms.Rotate(angle),
         # transforms.Resize(s),
         transforms.BottomCrop((oheight, owidth)),
         transforms.HorizontalFlip(do_flip)
     ])
-    print("2")
+
     if sparse is not None:
         sparse = transform_geometric(sparse)
-    print("2.5")
+
     target = transform_geometric(target)
-    print("3")
+
     if rgb is not None:
         brightness = np.random.uniform(max(0, 1 - args.jitter),
                                        1 + args.jitter)
@@ -205,7 +205,7 @@ def train_transform(rgb, sparse, target, rgb_near, args):
         rgb = transform_rgb(rgb)
         if rgb_near is not None:
             rgb_near = transform_rgb(rgb_near)
-    print("4")
+
     # sparse = drop_depth_measurements(sparse, 0.9)
 
     return rgb, sparse, target, rgb_near
