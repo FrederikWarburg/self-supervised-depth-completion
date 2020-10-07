@@ -90,6 +90,11 @@ parser.add_argument('--val',
                     default="select",
                     choices=["select", "full"],
                     help='full or select validation set')
+parser.add_argument('--dataset',
+                    type=str,
+                    default="kitti",
+                    choices=["kitti", "tartanair"],
+                    help='dataset to run experiments on')
 parser.add_argument('--jitter',
                     type=float,
                     default=0.1,
