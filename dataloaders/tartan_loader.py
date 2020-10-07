@@ -219,16 +219,16 @@ def get_paths_and_transform(split, args):
             or args.use_g), 'no proper input selected'
 
     # set sequences = * for all sequences
-    sequences = 'P003'
+    sequences = '*'
 
     if split == "train":
         transform = train_transform
         glob_d = os.path.join(
-            args.data_folder,
+            args.data_folder, 'train/', 
             sequences + '/depth_sparse0/data/*.csv'
         )
         glob_gt = os.path.join(
-            args.data_folder,
+            args.data_folder, 'train/',
             sequences + '/ground_truth/depth0/data/*.npy'
         )
         def get_rgb_paths(p):
@@ -238,11 +238,11 @@ def get_paths_and_transform(split, args):
     elif split == "val":
         transform = val_transform
         glob_d = os.path.join(
-            args.data_folder,
+            args.data_folder, 'val/',
             sequences + '/depth_sparse0/data/*.csv'
         )
         glob_gt = os.path.join(
-            args.data_folder,
+            args.data_folder, 'val/',
             sequences + '/ground_truth/depth0/data/*.npy'
         )
         def get_rgb_paths(p):
