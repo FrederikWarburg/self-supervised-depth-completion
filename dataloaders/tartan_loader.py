@@ -39,8 +39,6 @@ def load_calib():
     return K
 
 
-
-
 def rgb_read(filename):
     assert os.path.exists(filename), "file not found: {}".format(filename)
     img_file = Image.open(filename)
@@ -310,11 +308,11 @@ class TartanDepth(data.Dataset):
         return rgb, sparse, target, rgb_near
 
     def __getitem__(self, index):
-        print("getitem" , index)
+
         rgb, sparse, target, rgb_near = self.__getraw__(index)
         rgb, sparse, target, rgb_near = self.transform(rgb, sparse, target,
                                                        rgb_near, self.args)
-        print("1")
+
         r_mat, t_vec = None, None
         if self.split == 'train' and self.args.use_pose:
             success, r_vec, t_vec = get_pose_pnp(rgb, rgb_near, sparse, self.K)
@@ -327,7 +325,7 @@ class TartanDepth(data.Dataset):
                 rgb_near = rgb
                 t_vec = np.zeros((3, 1))
                 r_mat = np.eye(3)
-        print("2")
+
         rgb, gray = handle_gray(rgb, self.args)
         candidates = {"rgb":rgb, "d":sparse, "gt":target, \
             "g":gray, "r_mat":r_mat, "t_vec":t_vec, "rgb_near":rgb_near}
