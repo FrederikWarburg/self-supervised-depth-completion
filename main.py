@@ -143,6 +143,13 @@ depth_criterion = criteria.MaskedMSELoss() if (
 photometric_criterion = criteria.PhotometricLoss()
 smoothness_criterion = criteria.SmoothnessLoss()
 
+if args.dataset == 'tartanair':
+    from dataloaders.tartan_loader import load_calib, oheight, owidth, input_options, TartanDepth as Depth
+elif args.dataset == 'kitti':
+    from dataloaders.kitti_loader import load_calib, oheight, owidth, input_options, KittiDepth as Depth
+else:
+    raise NotImplementedError
+
 if args.use_pose:
     # hard-coded KITTI camera intrinsics
     K = load_calib()
@@ -308,13 +315,6 @@ def main():
         print("=> checkpoint state loaded.")
 
     model = torch.nn.DataParallel(model)
-
-    if args.dataset == 'tartanair':
-        from dataloaders.tartan_loader import load_calib, oheight, owidth, input_options, TartanDepth as Depth
-    elif args.dataset == 'kitti':
-        from dataloaders.kitti_loader import load_calib, oheight, owidth, input_options, KittiDepth as Depth
-    else:
-        raise NotImplementedError
 
     # Data loading code
     print("=> creating data loaders ... ")
