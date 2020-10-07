@@ -75,8 +75,8 @@ parser.add_argument('-i',
                     '--input',
                     type=str,
                     default='gd',
-                    choices=input_options,
-                    help='input: | '.join(input_options))
+                    choices=['d', 'rgb', 'rgbd', 'g', 'gd'],
+                    help='input: | '.join(['d', 'rgb', 'rgbd', 'g', 'gd']))
 parser.add_argument('-l',
                     '--layers',
                     type=int,
