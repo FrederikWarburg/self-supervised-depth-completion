@@ -7,8 +7,7 @@ import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 
-#from dataloaders.kitti_loader import load_calib, oheight, owidth, input_options, KittiDepth as Depth
-from dataloaders.tartan_loader import load_calib, oheight, owidth, input_options, TartanDepth as Depth
+
 from model import DepthCompletionNet
 from metrics import AverageMeter, Result
 import criteria
@@ -304,6 +303,13 @@ def main():
         print("=> checkpoint state loaded.")
 
     model = torch.nn.DataParallel(model)
+
+    if args.dataset == 'tartanair':
+        from dataloaders.tartan_loader import load_calib, oheight, owidth, input_options, TartanDepth as Depth
+    elif args.dataset == 'kitti':
+        from dataloaders.kitti_loader import load_calib, oheight, owidth, input_options, KittiDepth as Depth
+    else:
+        raise NotImplementedError
 
     # Data loading code
     print("=> creating data loaders ... ")
